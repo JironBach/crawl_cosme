@@ -25,14 +25,15 @@ def get_html(url)
   charset = nil
   # windowsでssl系のエラーを回避するためにsslのverifyを無効に。
   # see http://final.hateblo.jp/entry/2016/08/28/194712
-  html = OpenURI.open_uri(url, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}) do |f|
+=begin  html = OpenURI.open_uri(url, {ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE}) do |f|
     charset = f.charset
     f.read #htmlを読み込み変数htmlにわたす。
   end
+=end
   rows = []
   sleep(SLEEP_DURATION)
-  doc = Nokogiri::HTML.parse(html, nil, charset)
-  doc.css('h4.item').each do |link|
+  html = Nokogiri::HTML(open(url))
+  html.css('h4.item').each do |link|
     puts link.content
     goods = link.content
     puts link.css('a')[0][:href]
